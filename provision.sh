@@ -9,42 +9,47 @@ RABBITMQ_ERLANG_COOKIE=bugsbunny
 echo "Updating hosts file"
 cp /vagrant/hosts /etc/hosts
 
-# Install Erlang repo
-echo "Adding Erlang repo"
-wget -O ~/erlang-solutions_1.0_all.deb https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-dpkg -i ~/erlang-solutions_1.0_all.deb
-
-# Install PackageCloud RabbitMQ repo
-echo "Adding RabbitMQ repo"
-curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
-
-# Update apt metadata
-# No need to do this for now since the PackageCloud script automatically runs an update
-# apt-get update
-
-# Install specific RabbitMQ version
-echo "Installing RabbitMQ"
-apt-get --yes install rabbitmq-server=$RABBITMQ_VERSION
-
-echo "Setting Erlang Cookie"
-echo $RABBITMQ_ERLANG_COOKIE > /var/lib/rabbitmq/.erlang.cookie
-service rabbitmq-server stop
-service rabbitmq-server start
-
-# Enable mgmt plugin
-echo "Enabling rabbitmq_management plugin"
-rabbitmq-plugins enable rabbitmq_management
-
-# Create a new user with admin rights
-echo "Adding user \"$RABBITMQ_USERNAME\""
-rabbitmqctl add_user $RABBITMQ_USERNAME $RABBITMQ_PASSWORD
-rabbitmqctl set_permissions -p / $RABBITMQ_USERNAME ".*" ".*" ".*"
-rabbitmqctl set_user_tags $RABBITMQ_USERNAME administrator
-
-echo "Showing RabbitMQ status"
-rabbitmqctl status
-
 HOSTNAME=`hostname`
+
+case "$HOSTNAME" in
+    rabbitmq1|rabbitmq2|rabbitmq3)
+        # Install Erlang repo
+        echo "Adding Erlang repo"
+        wget -O ~/erlang-solutions_1.0_all.deb https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+        dpkg -i ~/erlang-solutions_1.0_all.deb
+
+        # Install PackageCloud RabbitMQ repo
+        echo "Adding RabbitMQ repo"
+        curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
+
+        # Update apt metadata
+        # No need to do this for now since the PackageCloud script automatically runs an update
+        # apt-get update
+
+        # Install specific RabbitMQ version
+        echo "Installing RabbitMQ"
+        apt-get --yes install rabbitmq-server=$RABBITMQ_VERSION
+
+        echo "Setting Erlang Cookie"
+        echo $RABBITMQ_ERLANG_COOKIE > /var/lib/rabbitmq/.erlang.cookie
+        service rabbitmq-server stop
+        service rabbitmq-server start
+
+        # Enable mgmt plugin
+        echo "Enabling rabbitmq_management plugin"
+        rabbitmq-plugins enable rabbitmq_management
+
+        # Create a new user with admin rights
+        echo "Adding user \"$RABBITMQ_USERNAME\""
+        rabbitmqctl add_user $RABBITMQ_USERNAME $RABBITMQ_PASSWORD
+        rabbitmqctl set_permissions -p / $RABBITMQ_USERNAME ".*" ".*" ".*"
+        rabbitmqctl set_user_tags $RABBITMQ_USERNAME administrator
+
+        echo "Showing RabbitMQ status"
+        rabbitmqctl status
+        ;;
+esac;
+
 case "$HOSTNAME" in
     rabbitmq2|rabbitmq3)
         echo "Stopping RabbitMQ and joining cluster"
@@ -56,6 +61,9 @@ case "$HOSTNAME" in
         echo "Showing RabbitMQ cluster status"
         rabbitmqctl cluster_status
         ;;
+esac;
+
+case "$HOSTNAME" in
     client1|client2)
         echo "Installing Apt packages"
         apt-get --yes install python-pip
