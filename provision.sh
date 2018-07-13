@@ -22,10 +22,6 @@ case "$HOSTNAME" in
         echo "Adding RabbitMQ repo"
         curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
 
-        # Update apt metadata
-        # No need to do this for now since the PackageCloud script automatically runs an update
-        # apt-get update
-
         # Install specific RabbitMQ version
         echo "Installing RabbitMQ"
         apt-get --yes install rabbitmq-server=$RABBITMQ_VERSION
@@ -65,6 +61,9 @@ esac;
 
 case "$HOSTNAME" in
     client1|client2)
+        echo "Update Apt"
+        apt-get update
+
         echo "Installing Apt packages"
         apt-get --yes install python-pip
 
