@@ -12,7 +12,7 @@ rmq_pass = "changeme"
 rmq_exchange = ""
 rmq_queue = "hello"
 rmq_msg_body = "Hello World"
-rmq_sleep = 0.5
+rmq_sleep = 0.2
 # --------------------
 
 # Logging stuff... no need to modify
