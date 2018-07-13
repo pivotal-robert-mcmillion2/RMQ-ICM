@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "client1" do |node|
-    node.vm.hostname = "client"
+    node.vm.hostname = "client1"
     node.vm.network "private_network", ip: "192.168.56.21", name: "vboxnet0"
     node.vm.provider "virtualbox" do |vb|
       vb.name = "client1"
