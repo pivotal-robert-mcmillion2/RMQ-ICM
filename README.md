@@ -49,7 +49,7 @@ Steps
     RABBITMQ_VERSION=3.7.7-1
 
     // Username and password for admin user
-    RABBITMQ_USERNAME=vcap
+    RABBITMQ_USERNAME=admin
     RABBITMQ_PASSWORD=changeme
 
     // Erlang cookie to be used by the nodes
