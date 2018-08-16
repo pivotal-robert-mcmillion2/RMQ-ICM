@@ -52,10 +52,23 @@ Steps
     ```
     vagrant status
     ```
-1. Verify RabbitMQ cluster is running using `rabbitmqctl`:
+1. SSH to a node:
     ```
     vagrant ssh rabbitmq1
+    ```
+1. Verify RabbitMQ cluster is running using `rabbitmqctl`:
+    ```
     sudo rabbitmqctl cluster_status
+    ```
 1. Verify RabbitMQ cluster is running using the Management Plugin web interface:
     - http://192.168.56.11:15672
     - Log in using the username/password set in `provision.sh`
+1. Suspend/resume the VMs:
+    ```
+    vagrant suspend
+    vagrant resume
+    ```
+1. Destroy the VMs:
+    ```
+    vagrant destroy -f
+    ```
