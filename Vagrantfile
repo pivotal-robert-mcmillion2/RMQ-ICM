@@ -3,6 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
+  config.ssh.insert_key = false
   
   config.vm.define "rabbitmq1" do |node|
     node.vm.hostname = "rabbitmq1"
