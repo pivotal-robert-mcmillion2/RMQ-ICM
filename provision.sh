@@ -30,6 +30,9 @@ case "$HOSTNAME" in
 
         echo "Setting Erlang Cookie"
         echo $RABBITMQ_ERLANG_COOKIE > /var/lib/rabbitmq/.erlang.cookie
+
+        cp /vagrant/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+
         service rabbitmq-server stop
         service rabbitmq-server start
 
