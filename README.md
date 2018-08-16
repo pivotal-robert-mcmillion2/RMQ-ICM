@@ -4,7 +4,13 @@ RabbitMQ - Install Configure Manage
 Introduction
 -
 
-This `Vagrantfile` and `provision.sh` will create a 3 x node RabbitMQ cluster and 2 x client nodes where you can run producer and consumer scripts.
+This `Vagrantfile` and `provision.sh` will create:
+- 3 x RabbitMQ nodes:
+    - Specified RabbitMQ software installed.
+    - Configured as a single cluster.
+- 2 x client nodes:
+    - Pika (Python RabbitMQ client) installed.
+    - Used to run producer/consumer scripts.
 
 Eralng and RabbitMQ packages are automatically installed from here:
 - https://packages.erlang-solutions.com
@@ -22,6 +28,11 @@ Steps
     cd ~/workspace
     git clone https://github.com/stephendotcarter/rabbitmq-icm
     cd rabbitmq-icm
+    ```
+1. Download the required Vagrant box and update to latest:
+    ```
+    vagrant box add ubuntu/xenial64
+    vagrant box update --box ubuntu/xenial64
     ```
 1. Verify VirtualBox networks:
     - Open VirtualBox.
@@ -56,18 +67,24 @@ Steps
     ```
     vagrant ssh rabbitmq1
     ```
-1. Verify RabbitMQ cluster is running using `rabbitmqctl`:
+1. Verify the RabbitMQ cluster is running using `rabbitmqctl`:
     ```
     sudo rabbitmqctl cluster_status
     ```
-1. Verify RabbitMQ cluster is running using the Management Plugin web interface:
+1. Verify the RabbitMQ cluster is running using the Management Plugin web interface:
     - http://192.168.56.11:15672
     - Log in using the username/password set in `provision.sh`
-1. Suspend/resume the VMs:
+1. Run the producer script to send some messages a queue:
     ```
-    vagrant suspend
-    vagrant resume
+    vagrant ssh client1
+    bash /vagrant/sample_producer.sh
     ```
+1. Run the consumer script to consumer the messages from the queue:
+    ```
+    vagrant ssh client1
+    bash /vagrant/sample_consumer.sh
+    ```
+1. Modify the variables in `sample_producer.sh` and `sample_consumer.sh` as needed. 
 1. Destroy the VMs:
     ```
     vagrant destroy -f
