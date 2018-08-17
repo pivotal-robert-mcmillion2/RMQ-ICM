@@ -9,7 +9,8 @@ RABBITMQ_ERLANG_COOKIE=bugsbunny
 echo "Updating hosts file"
 cp /vagrant/hosts /etc/hosts
 
-dpkg -r isc-dhcp-client ubuntu-minimal
+dpkg -r isc-dhcp-common isc-dhcp-client ubuntu-minimal
+killall dhclient
 
 HOSTNAME=`hostname`
 
