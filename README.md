@@ -18,7 +18,7 @@ Eralng and RabbitMQ packages are automatically installed from here:
 
 Steps
 -
-
+_Note: You need to be in the `rabbitmq-icm` directory to run all `vagrant` commands!_
 1. Install Vagrant:
     - https://www.vagrantup.com/downloads.html
 1. Install VirtualBox and VirtualBox Extension Pack
@@ -29,6 +29,7 @@ Steps
     git clone https://github.com/stephendotcarter/rabbitmq-icm
     cd rabbitmq-icm
     ```
+    
 1. Download the required Vagrant box and update to latest:
     ```
     vagrant box add ubuntu/xenial64
