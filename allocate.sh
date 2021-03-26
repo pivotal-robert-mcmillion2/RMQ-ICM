@@ -5,13 +5,20 @@ then
       exit
 fi
 
+echo "$1"
+
 FILENAME=/tmp/large_file
 
 SPACE_BEFORE=`df -h /dev/sda1 --output=avail | tail -1`
+echo $SPACE_BEFORE
 SPACE_AVAILABLE=`df /dev/sda1 | grep sda | awk '{print $4}'`
+echo $SPACE_AVAILABLE
 SPACE_REMAINDER=$1
-SPACE_REMAINDER=`expr $SPACE_REMAINDER * 1024`
+echo "This is: $SPACE_REMAINDER"
+SPACE_REMAINDER=expr $SPACE_REMAINDER * 1024
+echo "This is: $SPACE_REMAINDER"
 SPACE_CONSUME=`expr $SPACE_AVAILABLE - $SPACE_REMAINDER`
+echo $SPACE_CONSUME
 if [ $SPACE_CONSUME -le 0 ]
 then
       echo "Enough space already consumed!"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RABBITMQ_VERSION=3.7.7-1
+RABBITMQ_VERSION=3.8.8-1
 RABBITMQ_USERNAME=admin
 RABBITMQ_PASSWORD=changeme
 RABBITMQ_ERLANG_COOKIE=bugsbunny
@@ -20,6 +20,8 @@ case "$HOSTNAME" in
         echo "Adding Erlang repo"
         wget -O ~/erlang-solutions_1.0_all.deb https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
         dpkg -i ~/erlang-solutions_1.0_all.deb
+	sudo cp /vagrant/erlang /etc/apt/preferences.d/erlang
+	apt-get update
 
         # Install PackageCloud RabbitMQ repo
         echo "Adding RabbitMQ repo"
@@ -33,13 +35,15 @@ case "$HOSTNAME" in
         echo $RABBITMQ_ERLANG_COOKIE > /var/lib/rabbitmq/.erlang.cookie
 
         cp /vagrant/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+        cp /vagrant/rabbitmq-collect-env /tmp/
+        chmod +x /tmp/rabbitmq-collect-env
 
         service rabbitmq-server stop
         service rabbitmq-server start
 
         # Enable mgmt plugin
         echo "Enabling rabbitmq_management plugin"
-        rabbitmq-plugins enable rabbitmq_management
+        rabbitmq-plugins enable rabbitmq_prometheus rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_stomp rabbitmq_shovel rabbitmq_shovel_management rabbitmq_mqtt rabbitmq_tracing
 
         # Create a new user with admin rights
         echo "Adding user \"$RABBITMQ_USERNAME\""
@@ -47,8 +51,6 @@ case "$HOSTNAME" in
         rabbitmqctl set_permissions -p / $RABBITMQ_USERNAME ".*" ".*" ".*"
         rabbitmqctl set_user_tags $RABBITMQ_USERNAME administrator
 
-        echo "Showing RabbitMQ status"
-        rabbitmqctl status
         ;;
 esac;
 
@@ -59,21 +61,11 @@ case "$HOSTNAME" in
         rabbitmqctl join_cluster rabbit@rabbitmq1
         rabbitmqctl start_app
 
-        # Run a cluster status to verify node joined
-        echo "Showing RabbitMQ cluster status"
-        rabbitmqctl cluster_status
         ;;
 esac;
 
-case "$HOSTNAME" in
-    client1|client2)
-        echo "Update Apt"
-        apt-get update
-
-        echo "Installing Apt packages"
-        apt-get --yes install python-pip
-
-        echo "Installing Python packages"
-        pip install pika
-        ;;
+case "$HOSTNAME" in rabbitmq3)
+    echo "Showing Cluster Status"
+    rabbitmqctl cluster_status
+    ;;
 esac;
